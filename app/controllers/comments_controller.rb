@@ -3,18 +3,21 @@ class CommentsController < ApplicationController
 
   
   def create
-    @comment = Comment.new(comment_params)
+    @link = Link.find(params[:link_id])
+    @comment = @link.comments.new(comment_params)
+    @comment.user = current_user
 
     respond_to do |format|
       if @comment.save
-        format.html { redirect_to @comment, notice: 'Comment was successfully created.' }
-        format.json { render :show, status: :created, location: @comment }
+        format.html { redirect_to @link, notice: 'Comment was successfully created.' }
+        format.json { render json: @comment, status: :created, location: @comment }
       else
-        format.html { render :new }
+        format.html { render action: "new" }
         format.json { render json: @comment.errors, status: :unprocessable_entity }
       end
     end
   end
+
 
 
   # DELETE /comments/1
